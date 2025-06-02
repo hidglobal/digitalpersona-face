@@ -1,0 +1,305 @@
+= DigitalPersona Face API
+:table-caption!:
+:attribute-missing: warn
+:icons: font
+:experimental:
+:reproducible:
+:hide-uri-scheme:
+:source-highlighter: highlight.js
+:highlightjs-theme: github
+
+toc::[]
+
+== Overview
+
+As a part of DigitalPersona Access Management API (DPAM), the
+`@digitalpersona/face` library provides Javascript API allowing users of web
+applications to perform face capture in browsers.
+
+IMPORTANT: The API is designed to be used in a browser environment only!
+It is not a NodeJS library!
+
+== Installing
+
+```shell
+> npm install @digitalpersona/face
+```
+
+Once the package is installed, it can be imported into your browser application.
+
+The `@digitalpersona/face` provides only a legacy IIFE module.
+No modern ESM module is provided.
+
+The IIFE module works in legacy and/or for simple "build-less" applications,
+with no requirements for bundling and dead code elimination. The IIFE module
+must be imported using the HTML `<script>` tag. You may use a CDN like unpkg.com:
+`<script src="https://unpkg.com/@digitalpersona/iwa/dist/face.sdk.js">`.
+
+The IIFE module adds a global `faceSDK` property to the `window` object.
+
+The `@digitalpersona/face` package also provides a `@digitalpersona/face/facefinder`
+IIFE module, which contains a data for a default face detection cascade.
+This module must be loaded into the web page before the first use of the `faceSDK`
+object.
+
+When using bundlers like Rollup, Webpack, etc, the `"faceSDK"` object must be
+added to the list of "globals", and the `"@digitalpersona/face"` must be added
+to the list of "external" modules, so it will not be bundled into the final
+output. When using the default face detection cascade, the
+`"facefinder"` object must also be added to the list of "globals", and the
+`@digitalpersona/face/facefinder` must be added to the list of "externals".
+
+If you are using a vanilla Javascript application, you can add the following
+`script` tag to your HTML page:
+
+[separator=¦]
+|===
+a¦
+.index.html
+[source,html]
+----
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  ...
+  <script type="text/javascript" src="scripts/face.sdk.js"></script>
+  <script type="text/javascript" src="scripts/facefinder.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>
+
+----
+
+.index.js
+[source,js]
+----
+/// <reference types="@digitalpersona/face" />
+/// <reference types="@digitalpersona/face/facefinder" />
+
+class FaceSigninControl
+{
+  constructor() {
+    this.api = faceSDK;
+    ...
+  }
+  ...
+}
+...
+
+----
+|===
+
+Alternatively, for "no-build" applications, you can use a CDN to load the library:
+
+[separator=¦]
+|===
+a¦
+.index.html
+[source,html]
+----
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  ...
+  <script type="text/javascript" src="https://unpkg.com/@digitalpersona/face@1"></script>
+  <script type="text/javascript" src="https://unpkg.com/@digitalpersona/face@1/facefinder"></script>
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>
+
+----
+|===
+
+If you are using Angular project (Typescript + bundler), you can import the library
+as follows:
+
+[separator=¦]
+|===
+a¦
+.angular.json
+[source,json]
+----
+{
+  "projects": {
+    "my-app": {
+      "architect": {
+        "build": {
+          "options": {
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "scripts": [
+              "./node_modules/@digitalpersona/face/dist/face.sdk.js"
+              "./node_modules/@digitalpersona/face/dist/facefinder.js"
+            ]
+          }
+        },
+      }
+    }
+  }
+}
+----
+
+.app.component.ts
+[source,typescript]
+----
+/// <reference types="@digitalpersona/face" />
+/// <reference types="@digitalpersona/face/facefinder" />
+
+const api = new faceSDK();
+...
+
+----
+|===
+
+NOTE: The `projects.my-app.architect.build.scripts` property in the `angular.json`
+is the https://angular.dev/reference/configs/workspace-config#build-target[Angular's way]
+to bundle external modules like `@digitalpersona/face`
+as if they would be loaded with the `<script>` tag.
+
+NOTE: The `/// <reference types="..." />` need to be added avoid TypeScript
+typing errors.
+You may also need to set https://www.typescriptlang.org/tsconfig/#moduleResolution[`"moduleResolution": "bundler"`]
+in your `tsconfig.json`, to tell TypeScript to use the modern module resolution algorithm.
+
+== Usage
+
+In a typical use case, users navigate to a logon page, and there they are presented
+with a logon. The page either starts the face capture process automatically, or
+allows the user to initiate it by clicking a UI element like buttons.
+
+=== Initialization
+
+In your face capture controller class, obtain the global `faceSDK` objects
+and initialize it:
+
+[separator=¦]
+|===
+a¦
+
+.faceSignin.component.ts
+[source,typescript]
+----
+// NOTE: make sure you import only typings here, not a code!
+// Also make sure this is not a NodeJS module. Face API is a browser-only library!
+
+/// <reference types="@digitalpersona/face" />
+/// <reference types="@digitalpersona/face/facefinder" />
+
+export class FaceSigninControl
+{
+    constructor() {
+      this.api = faceSDK;
+      this.api.init(
+        videoElement,
+        constraints,
+        canvas,
+        displayCanvas,
+        imageCount,
+        this.onSuccess.bind(this),
+        this.onError.bind(this),
+        this.onProgress.bind(this)
+      );
+      ...
+    }
+
+    // Event handlers
+    onSuccess(images) { ... }
+    onError({code, message, name}) { ... }
+    onProgress({code, message}) { ... }
+    ...
+}
+----
+|===
+
+The `init` method takes the following parameters:
+
+* `videoElement` - a reference to the HTML `<video>` element where the video
+  feed will be displayed. The video element must be a standard HTML `<video>`
+  element. The `<video>` element should have `autoplay` set, in order to
+  start the video feed automatically. It should aslo a `playsinline` attribute
+  set, to prevent full-screen video. The video element should be made invisible
+  by setting its size to 1 pixel, because the user will see the video in the
+  `displayCanvas` element, which will be used to show the live video feed and
+  face detection feedback.
+* `constraints` - a set of https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API/Constraints#applying_constraints[constraints]
+  for the video feed. This is a standard `MediaStreamConstraints` object.
+  The `video` property is required, and it must be a boolean value.
+  The `audio` property is not needed.
+* `canvas` - a reference to the HTML `<canvas>` element which will be used to
+  acquire image captures. This is a standard HTML `<canvas>` element, and its
+  attibutes like height and width will define the properties of the images captured
+  and returned.
+* `displayCanvas` - a reference to the HTML `<canvas>` element where the
+  users can observe the capturing process in live, with visuals cues helping
+  them to position their face properly and displaying a progress.
+  If `null` or `undefined` value is passed, users will not be able to see  the
+  live video feed and cues, and will receive only text feebdack via the
+  `onProgress` callback.
+* `imageCount` - a number of images to be captured. This is an positive integer
+  value, with 1 as a minimal value. For face enrollment, it is recomended to
+  collect multiple images to improve the quality of the face model. For authentication,
+  a sinlge image may be sufficient.
+* `onSuccess` - a callback function that will be called when the face capture
+  is successful. This function will receive an array of captured images, each
+  encoded into a
+  https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data[`DataUrl`]
+  string of form `"data:image/jpeg;base64,<base64-encoded image data>"`.
+* `onError` - a callback function that will be called when an error occurs
+  during the face capture. This function will receive an error object, containing
+  an error code and a message describing the error.
+* `onProgress` - a callback function that will be called when the face capture
+  is in progress. This function will receive a progress object, with feedback
+  messages prompting the user to place their face at a correct distance,
+  orientation, and proper illumination. The progress messages can be customized
+  using the `capture.states` hashmap in the `options` parameter.
+* `options` - an optional object with customization parameters, such as
+  face detection parameters, capture parameters and progress message customizations,
+  visual customization for a face detection frame, backdrop etc. If not provided,
+  the default values will be used.
+
+By default, the `faceSDK` will look for a default face detection cascade
+in the `window.facefinder` property. This cascade is typically
+provided by the `@digitalpersona/face/facefinder` module loaded into the page.
+If you want to use a custom face detection cascade, you can pass it
+as a `detection.cascade` property in the `options` parameter.
+
+=== Starting the Face Capture
+
+The call to `init` method will start the face capture process. This method may
+prompt the browser to ask camera permissions, and it will start the video feed
+from the camera.
+
+=== Controlling the Face Capture
+
+The capture process will continue until the specified number of images is captured,
+or until the `stopVidoe` method is called. The `stopVideo` method will stop the
+video feed from the camera, and it will stop the face capture process. To restart
+the capture process, call the `init` method again.
+
+=== Handling the Results
+
+When the face capture process is completed, the `onSuccess` callback will be
+When the face capture process is successful, the `onSuccess` callback will
+be called with an array of captured images. Each image is a base64-encoded
+string, which can be used to display the captured images in the UI.
+
+=== Camera selection
+
+If the user has multiple cameras, the `constraints` parameter can be used to
+select a specific camera.
+The https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API/Constraints#applying_constraints[constraints]`
+parameter is a standard `MediaStreamConstraints` object.
+
+The `video` property is required, and it can be either a boolean value or an object
+with constraints on camera orientation, resolution, or ID.
+
+The `audio` property is not needed, and it can be omitted or set to `false`.
+
+On a first call to the `init` method, the browser will prompt the user to
+grant camera permissions, and it will start the video feed from the selected camera.
+
+To use the same camera on the next call to the `init` method, the
+`constraints` parameter must be the same as on the first call, or it may explicitly
+define the selected camera's `deviceId`. The ID of the last used device can be retrieved
+from the `faceSDK` object using the `getLastUsedCameraId` method.
+

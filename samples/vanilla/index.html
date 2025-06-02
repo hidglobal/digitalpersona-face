@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <title>DigitalPersona Face API 1.0 Sample</title>
+
+    <link rel="stylesheet" href="./index.css">
+  </head>
+  <body>
+    <!-- Main view -->
+
+    <header>
+      <h1>DigitalPersona Face  API 1.0 Sample</h1>
+    </header>
+
+    <main>
+      <form id="captureControl" action="#">
+        <section>
+          <button id="start">Start</button>
+          <button id="stop">Stop</button>
+          <a id="cannotStart" href="#" onclick="showDialog('#howToStart')">Does not work?</a>
+        </section>
+
+        <div id="error"></div>
+
+        <section id="captureProgress">
+          <div name="message"></div>
+          <video id="video" autoplay playsinline style="width: auto; height: 1px; opacity: 0;"></video>
+          <canvas id="videoCanvas" width="640" height="480" style="display: none;"></canvas>
+          <canvas id="detectionCanvas" width="800" height="600"></canvas>
+        </section>
+
+        <section id="captureResults">
+
+          <fieldset>
+            <legend>Snapshots</legend>
+            <list id="samples"
+              item-template="#sample"
+              prompt="Click 'Start' to capture faces"
+              prompt-more="Click 'Start' again to re-capture faces" ></list>
+          </fieldset>
+
+        </section>
+      </form>
+    </main>
+
+    <footer>Copyright &copy; 2025 HID Global Corporation/ASSA ABLOY AB.</footer>
+
+    <!-- Dialogs -->
+
+    <dialog id="howToStart">
+      <form method="dialog">
+        <p>Make sure you computer has a web camera, and the camera faces towards you.
+          Make sure that during the capture your face is illuminated well and
+          no other faces appear in the camera's field of view.</p>
+        <footer>
+          <button value="ok">Ok</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <!-- List item templates -->
+
+    <template id="sample">
+      <section>
+        <img name="image"></img>
+      </section>
+    </template>
+
+    <!-- For build-less non-production development, you can just load the SDKs from the CDN. -->
+    <script type="text/javascript" src="https://unpkg.com/@digitalpersona/face@1/facefinder"></script>
+    <script type="text/javascript" src="https://unpkg.com/@digitalpersona/face@1"></script>
+
+    <!-- <script type="text/javascript" src="./node_modules/@digitalpersona/face/dist/facefinder.js"></script>
+    <script type="text/javascript" src="./node_modules/@digitalpersona/face/dist/face.sdk.js"></script> -->
+
+    <script type="text/javascript" src="index.js"></script>
+  </body>
+</html>
