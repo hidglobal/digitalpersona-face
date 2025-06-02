@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "outDir": "dist/@types",
+    "emitDeclarationOnly": true,
+    "isolatedDeclarations": true,
+
+    "lib": [ "es2016", "dom" ],
+
+    /* Modules */
+    "module": "es2015",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "removeComments": true,
+    "declaration": true,
+
+    /* Type Checking */
+    "strict": true,
+  },
+  "exclude": [
+      "node_modules",
+      "dist",
+      "samples",
+      "src/**/*.spec.ts",
+      "-*",
+      "~*"
+  ]
+}
