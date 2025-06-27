@@ -12,14 +12,13 @@ toc::[]
 
 == Overview
 
-As a part of DigitalPersona Access Management API (DPAM), the
-`@digitalpersona/face` library provides Javascript API allowing users of web
-applications to perform face capture in browsers.
+As a part of DigitalPersona Access Management API (DPAM), the `@digitalpersona/face` library provides a Javascript API allowing web
+application users to perform face capture in browsers.
 
 IMPORTANT: The API is designed to be used in a browser environment only!
 It is not a NodeJS library!
 
-== Installing
+== Installation
 
 ```shell
 > npm install @digitalpersona/face
@@ -32,7 +31,7 @@ No modern ESM module is provided.
 
 The IIFE module works in legacy and/or for simple "build-less" applications,
 with no requirements for bundling and dead code elimination. The IIFE module
-must be imported using the HTML `<script>` tag. You may use a CDN like unpkg.com:
+must be imported using the HTML `<script>` tag. You can use a CDN such as unpkg.com:
 `<script src="https://unpkg.com/@digitalpersona/iwa/dist/face.sdk.js">`.
 
 The IIFE module adds a global `faceSDK` property to the `window` object.
@@ -42,11 +41,11 @@ IIFE module, which contains a data for a default face detection cascade.
 This module must be loaded into the web page before the first use of the `faceSDK`
 object.
 
-When using bundlers like Rollup, Webpack, etc, the `"faceSDK"` object must be
+When using bundlers such as Rollup and Webpack, the `"faceSDK"` object must be
 added to the list of "globals", and the `"@digitalpersona/face"` must be added
 to the list of "external" modules, so it will not be bundled into the final
-output. When using the default face detection cascade, the
-`"facefinder"` object must also be added to the list of "globals", and the
+output.
+When using the default face detection cascade, the `"facefinder"` object must also be added to the list of "globals", and the
 `@digitalpersona/face/facefinder` must be added to the list of "externals".
 
 If you are using a vanilla Javascript application, you can add the following
@@ -153,7 +152,7 @@ const api = new faceSDK();
 
 NOTE: The `projects.my-app.architect.build.scripts` property in the `angular.json`
 is the https://angular.dev/reference/configs/workspace-config#build-target[Angular's way]
-to bundle external modules like `@digitalpersona/face`
+to bundle external modules such as `@digitalpersona/face`
 as if they would be loaded with the `<script>` tag.
 
 NOTE: The `/// <reference types="..." />` need to be added avoid TypeScript
@@ -163,9 +162,9 @@ in your `tsconfig.json`, to tell TypeScript to use the modern module resolution 
 
 == Usage
 
-In a typical use case, users navigate to a logon page, and there they are presented
-with a logon. The page either starts the face capture process automatically, or
-allows the user to initiate it by clicking a UI element like buttons.
+In a typical use case, users navigate to a logon page where they are presented
+with a logon UI. The page either starts the face capture process automatically or
+allows the user to initiate it by clicking a UI element such as buttons.
 
 === Initialization
 
@@ -179,7 +178,7 @@ a¦
 .faceSignin.component.ts
 [source,typescript]
 ----
-// NOTE: make sure you import only typings here, not a code!
+// NOTE: Make sure you import only typings here, not a code!
 // Also make sure this is not a NodeJS module. Face API is a browser-only library!
 
 /// <reference types="@digitalpersona/face" />
@@ -215,9 +214,9 @@ The `init` method takes the following parameters:
 
 * `videoElement` - a reference to the HTML `<video>` element where the video
   feed will be displayed. The video element must be a standard HTML `<video>`
-  element. The `<video>` element should have `autoplay` set, in order to
-  start the video feed automatically. It should aslo a `playsinline` attribute
-  set, to prevent full-screen video. The video element should be made invisible
+  element. The `<video>` element should have `autoplay` set to
+  start the video feed automatically. It should also have a `playsinline` attribute
+  set to prevent full-screen video. The video element should be made invisible
   by setting its size to 1 pixel, because the user will see the video in the
   `displayCanvas` element, which will be used to show the live video feed and
   face detection feedback.
@@ -227,18 +226,18 @@ The `init` method takes the following parameters:
   The `audio` property is not needed.
 * `canvas` - a reference to the HTML `<canvas>` element which will be used to
   acquire image captures. This is a standard HTML `<canvas>` element, and its
-  attibutes like height and width will define the properties of the images captured
+  attributes, such as height and width, will define the properties of the images captured
   and returned.
 * `displayCanvas` - a reference to the HTML `<canvas>` element where the
-  users can observe the capturing process in live, with visuals cues helping
-  them to position their face properly and displaying a progress.
+  users can observe the capturing process in live, with visual cues helping
+  them to position their face properly and displaying the progress.
   If `null` or `undefined` value is passed, users will not be able to see  the
-  live video feed and cues, and will receive only text feebdack via the
+  live video feed and cues, and will receive only text feedback via the
   `onProgress` callback.
-* `imageCount` - a number of images to be captured. This is an positive integer
-  value, with 1 as a minimal value. For face enrollment, it is recomended to
+* `imageCount` - a number of images to be captured. This is a positive integer
+  value, with 1 as a minimal value. For face enrollment, it is recommended to
   collect multiple images to improve the quality of the face model. For authentication,
-  a sinlge image may be sufficient.
+  a single image may be sufficient.
 * `onSuccess` - a callback function that will be called when the face capture
   is successful. This function will receive an array of captured images, each
   encoded into a
@@ -266,7 +265,7 @@ as a `detection.cascade` property in the `options` parameter.
 === Starting the Face Capture
 
 The call to `init` method will start the face capture process. This method may
-prompt the browser to ask camera permissions, and it will start the video feed
+prompt the browser to ask for camera permissions, and it will start the video feed
 from the camera.
 
 === Controlling the Face Capture
@@ -278,12 +277,12 @@ the capture process, call the `init` method again.
 
 === Handling the Results
 
-When the face capture process is completed, the `onSuccess` callback will be
+When the face capture process is completed, the `onSuccess` callback will be called.
 When the face capture process is successful, the `onSuccess` callback will
 be called with an array of captured images. Each image is a base64-encoded
 string, which can be used to display the captured images in the UI.
 
-=== Camera selection
+=== Camera Selection
 
 If the user has multiple cameras, the `constraints` parameter can be used to
 select a specific camera.
