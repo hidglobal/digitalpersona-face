@@ -8,7 +8,7 @@ This JavaScript library provides a Javascript API allowing web application users
 
 Supported browsers:
 
-* Google® Chrome®  and Chrome-based browsers (such as Microsoft Edge)Add commentMore actions
+* Google® Chrome® and Chrome-based browsers (such as Microsoft Edge)
 * Mozilla® Firefox®
 * Microsoft Edge Legacy (WebView2)
 
