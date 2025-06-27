@@ -1,18 +1,22 @@
 # HID DigitalPersona Face API
 
-This JavaScript library provides Javascript API allowing users of web applications to perform face capture in browsers.
+This JavaScript library provides a Javascript API allowing web application users to perform face capture in browsers.
+
+<!--- SIS: add the Requirements with DP clients? --->
+
+## Target platforms and technologies
 
 Supported browsers:
 
-* Chrome and Chrome-based browsers (Edge etc)
-* Firefox
-* Edge Legacy (WebView2)
+* Google® Chrome® and Chrome-based browsers (such as Microsoft Edge)
+* Mozilla® Firefox®
+* Microsoft Edge Legacy (WebView2)
 
 Module formats (browser-only, no NodeJS!):
 
-* modern ESM (ESNext): `dist/index.mjs`
-* IIFE (ES2015): `dist/index[.min].js`
-* Typings (TypeScript): `dist/@types`
+* Modern ESM (ESNext) - `dist/index.mjs`
+* IIFE (ES2015) - `dist/index[.min].js`
+* Typings (TypeScript) - `dist/@types`
 
 ## Documentation
 
